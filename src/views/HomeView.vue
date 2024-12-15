@@ -30,6 +30,7 @@ const listCameras = async () => {
   }
 };
 
+
 const startZxingScanner = async () => {
   try {
     if (!selectedCamera.value) {
@@ -43,7 +44,9 @@ const startZxingScanner = async () => {
     errorMessage.value = null;
 
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: selectedCamera.value },
+      video: {
+        deviceId: selectedCamera.value ? { exact: selectedCamera.value } : undefined,
+      },
     });
 
     videoElement.value!.srcObject = stream;
@@ -54,8 +57,6 @@ const startZxingScanner = async () => {
       videoElement.value!,
       (decodedResult) => {
         if (decodedResult) {
-          console.log('Resultado do QR Code:', decodedResult);
-
           qrCodeResult.value = decodedResult.getText();
           scanHistory.value.push(qrCodeResult.value);
           stopZxingScanner();
@@ -70,6 +71,7 @@ const startZxingScanner = async () => {
     loadingCamera.value = false;
   }
 };
+
 
 const stopZxingScanner = () => {
   if (videoElement.value) {
